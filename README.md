@@ -1,37 +1,50 @@
 # C Console Games
 
-This repository contains **console-based games developed in C** as part of my learning journey in data structures and programming fundamentals.  
+A collection of console-based games developed in C to strengthen core programming fundamentals and problem-solving skills, with a focus on data structures and clean code implementation.
 
-I implemented these games to practice arrays, linked lists, and dynamic memory, with a focus on making the code **clean, readable, and beginner-friendly**. I also used **AI-assisted debugging** to understand certain concepts, like random number generation and implementing an **undo feature**.
+---
+
+## Overview
+
+This repository includes small games built to practice core concepts such as arrays, control flow, and state management. The implementations emphasize clarity, modular logic, and efficient use of C fundamentals.
 
 ---
 
 ## Games Included
 
-1. **Tic Tac Toe**  
-   - 2-player or vs computer mode  
-   - Practice with arrays and basic game logic  
+### Tic Tac Toe
+- Supports 2-player and basic computer mode  
+- Demonstrates 2D array manipulation and game logic  
+- Handles input validation and win conditions  
 
-2. **Stack-based Undo Game (Target Challenge)**  
-   - Reach a randomly generated target number  
-   - Add, multiply, or undo moves  
-   - Demonstrates **tracking move history / undo functionality**  
+### Stack-Based Target Game (Undo Feature)
+- Player reaches a randomly generated target using operations  
+- Supports add, multiply, and undo actions  
+- Demonstrates state tracking and undo functionality using stack concepts  
 
-*(More games will be added in the future.)*
+---
+
+## Key Concepts Covered
+
+- Arrays and 2D arrays  
+- Control flow and game loops  
+- Random number generation (`rand`, `srand`)  
+- State management and undo logic  
+- Modular and readable C code structure  
 
 ---
 
 ## How to Run
 
-- Simply **copy the code into a C IDE** (like Code::Blocks or VS Code with a C compiler)  
-- Compile and run the program directly from your IDE  
+1. Open the code in any C-supported IDE (e.g., Code::Blocks, VS Code)  
+2. Compile using a C compiler (GCC recommended)  
+3. Run the executable from the terminal or IDE  
 
 ---
 
-## Learning Points
+## Notes
 
-- Arrays and 2D array manipulation  
-- Implementing a **move history / undo feature**  
-- Random number generation (`srand` / `rand`)  
-- Dynamic memory allocation and linked lists (planned for future games)  
-- Console I/O and basic game loops  
+This project is part of my ongoing learning in C programming and data structures. Additional games and features will be added over time.
+## Notes
+
+This project is part of my ongoing learning in C programming and data structures. Additional games and features will be added over
