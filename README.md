@@ -45,6 +45,3 @@ This repository includes small games built to practice core concepts such as arr
 ## Notes
 
 This project is part of my ongoing learning in C programming and data structures. Additional games and features will be added over time.
-## Notes
-
-This project is part of my ongoing learning in C programming and data structures. Additional games and features will be added over
