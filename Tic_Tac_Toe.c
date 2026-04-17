@@ -1,129 +1,187 @@
 #include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX 100
+// 3x3 Tic Tac Toe board
+char board[3][3] = { {' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '} };
 
-// Stack structure to store previous values for undo
-struct Stack {
-    int arr[MAX];
-    int top;
-};
-
-// Initialize the stack
-void initStack(struct Stack *s) {
-    s->top = -1;
-}
-
-// Push a value onto the stack
-void push(struct Stack *s, int value) {
-    if (s->top == MAX - 1) {
-        printf("Stack Overflow!\n");
-        return;
-    }
-    s->arr[++(s->top)] = value;
-}
-
-// Pop a value from the stack
-int pop(struct Stack *s) {
-    if (s->top == -1) {
-        return -1; // Indicates empty stack
-    }
-    return s->arr[(s->top)--];
-}
-
-// Check if the stack is empty
-int isEmpty(struct Stack *s) {
-    return s->top == -1;
-}
+// Function prototypes
+void displayBoard();
+bool checkPosition(int row, int col);
+int insertPlayer(int currentPlayer, char symbol);
+int insertComputer(int currentPlayer, char symbol);
+bool checkWinner();
+bool isBoardFull();
+void twoPlayerGame();
+void singlePlayerGame();
 
 int main() {
-    struct Stack undoStack;
-    int currentValue = 0; // Current value in the game
     int choice;
-    int targetValue;
-    int moves = 0;
-
-    initStack(&undoStack);
-
-    // Generate a random target between 20 and 69
-    srand(time(0));
-    targetValue = rand() % 50 + 20;
-
-    printf("\n     TARGET STACK: UNDO CHALLENGE     \n");
-    printf("Target Value: %d\n\n", targetValue);
-    printf("Rules:\n");
-    printf("1. Start from 0 and reach the target value.\n");
-    printf("2. You can perform the following operations:\n");
-    printf("   - Add 1\n");
-    printf("   - Add 5\n");
-    printf("   - Multiply by 2\n");
-    printf("3. Use 'Undo' to revert to the previous value.\n");
-    printf("4. Try to reach the target in minimum moves.\n\n");
-
-    while (1) {
-        printf("Current Value: %d | Moves: %d\n", currentValue, moves);
-        printf("Choose an action:\n");
-        printf("1. Add 1\n");
-        printf("2. Add 5\n");
-        printf("3. Multiply by 2\n");
-        printf("4. Undo\n");
-        printf("5. Exit\n");
-        printf("Enter choice: ");
+    do {
+        printf("\n      WELCOME TO TIC TAC TOE      \n");
+        printf("1. Play with Computer\n");
+        printf("2. Play with Another Player\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch(choice) {
             case 1:
-                push(&undoStack, currentValue); // Save current state
-                currentValue += 1;
-                moves++;
-                printf("Added 1!\n\n");
+                singlePlayerGame();
                 break;
-
             case 2:
-                push(&undoStack, currentValue);
-                currentValue += 5;
-                moves++;
-                printf("Added 5!\n\n");
+                twoPlayerGame();
                 break;
-
             case 3:
-                push(&undoStack, currentValue);
-                currentValue *= 2;
-                moves++;
-                printf("Multiplied by 2!\n\n");
+                printf("\nExiting...\n");
                 break;
-
-            case 4:
-                if (isEmpty(&undoStack)) {
-                    printf("Nothing to undo!\n\n");
-                } else {
-                    currentValue = pop(&undoStack); // Restore previous value
-                    moves++;
-                    printf("Undo successful!\n\n");
-                }
-                break;
-
-            case 5:
-                printf("Exiting game...\n");
-                exit(0);
-
             default:
-                printf("Invalid choice! Try again.\n\n");
+                printf("\nInvalid input! Try again.\n");
         }
 
-        // Check for victory
-        if (currentValue == targetValue) {
-            printf("\n  You reached the target value!  \n");
-            printf("Total moves: %d\n", moves);
-            break;
-        }
+        // Reset the board for a new game
+        for(int i = 0; i < 3; i++)
+            for(int j = 0; j < 3; j++)
+                board[i][j] = ' ';
 
-        // Check if user exceeded target
-        if (currentValue > targetValue) {
-            printf("   You exceeded the target! Try undo.\n\n");
-        }
-    }
+    } while(choice != 3);
 
     return 0;
+}
+
+// Display the current board
+void displayBoard() {
+    printf("   1   2   3\n");
+    for(int i = 0; i < 3; i++) {
+        printf("  +---+---+---+\n");
+        printf("%d |", i + 1);
+        for(int j = 0; j < 3; j++)
+            printf(" %c |", board[i][j]);
+        printf("\n");
+    }
+    printf("  +---+---+---+\n");
+}
+
+// Check if a position is valid and empty
+bool checkPosition(int row, int col) {
+    return !(row < 0 || row >= 3 || col < 0 || col >= 3 || board[row][col] != ' ');
+}
+
+// Insert a move for a human player
+int insertPlayer(int currentPlayer, char symbol) {
+    int row, col;
+    while(true) {
+        printf("\nPlayer %d, enter your move (row and column): ", currentPlayer);
+        scanf("%d %d", &row, &col);
+        row--; col--;  // Adjust for 0-based indexing
+        if(checkPosition(row, col)) break;
+        printf("Invalid position! Try again.\n");
+    }
+    board[row][col] = symbol;
+    displayBoard();
+    return (currentPlayer == 1) ? 2 : 1;  // Switch player
+}
+
+// Insert a move for the computer
+int insertComputer(int currentPlayer, char symbol) {
+    int row, col;
+    srand(time(NULL));
+    do {
+        row = rand() % 3;
+        col = rand() % 3;
+    } while(!checkPosition(row, col));
+
+    printf("\nComputer chooses: Row %d, Column %d\n", row + 1, col + 1);
+    board[row][col] = symbol;
+    displayBoard();
+    return (currentPlayer == 1) ? 2 : 1;  // Switch player
+}
+
+// Check if any player has won
+bool checkWinner() {
+    // Rows and columns
+    for(int i = 0; i < 3; i++) {
+        if(board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][1] == board[i][2])
+            return true;
+        if(board[0][i] != ' ' && board[0][i] == board[1][i] && board[1][i] == board[2][i])
+            return true;
+    }
+    // Diagonals
+    if(board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2])
+        return true;
+    if(board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0])
+        return true;
+
+    return false;
+}
+
+// Check if the board is full
+bool isBoardFull() {
+    for(int i = 0; i < 3; i++)
+        for(int j = 0; j < 3; j++)
+            if(board[i][j] == ' ')
+                return false;
+    return true;
+}
+
+// Two-player game mode
+void twoPlayerGame() {
+    int currentPlayer = 1;
+    char symbol;
+    char player1[20] = "Player 1";
+    char player2[20] = "Player 2";
+
+    printf("\nEnter symbol for Player 1 (X or O): ");
+    scanf(" %c", &symbol);
+    char symbol1 = (symbol == 'X' || symbol == 'x') ? 'X' : 'O';
+    char symbol2 = (symbol1 == 'X') ? 'O' : 'X';
+
+    displayBoard();
+
+    while(!checkWinner() && !isBoardFull()) {
+        if(currentPlayer == 1)
+            currentPlayer = insertPlayer(currentPlayer, symbol1);
+        else
+            currentPlayer = insertPlayer(currentPlayer, symbol2);
+    }
+
+    if(checkWinner()) {
+        printf("\nWinner is %s!\n", (currentPlayer == 1) ? player2 : player1);
+    } else {
+        printf("\nIt's a tie!\n");
+    }
+}
+
+// Single-player (vs computer) mode
+void singlePlayerGame() {
+    int currentPlayer = 1;
+    char playerSymbol, computerSymbol;
+    char playerName[20] = "Player";
+
+    printf("\nChoose your symbol (X or O): ");
+    scanf(" %c", &playerSymbol);
+    if(playerSymbol == 'X' || playerSymbol == 'x') {
+        playerSymbol = 'X';
+        computerSymbol = 'O';
+    } else {
+        playerSymbol = 'O';
+        computerSymbol = 'X';
+    }
+
+    displayBoard();
+
+    while(!checkWinner() && !isBoardFull()) {
+        if(currentPlayer == 1)
+            currentPlayer = insertPlayer(currentPlayer, playerSymbol);
+        else
+            currentPlayer = insertComputer(currentPlayer, computerSymbol);
+    }
+
+    if(checkWinner()) {
+        printf("\nWinner is %s!\n", (currentPlayer == 1) ? "Computer" : playerName);
+    } else {
+        printf("\nIt's a tie!\n");
+    }
 }
